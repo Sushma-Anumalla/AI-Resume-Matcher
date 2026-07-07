@@ -5,7 +5,7 @@ function AnalyzeButton({ jobDescription, setResult }) {
   const [loading, setLoading] = useState(false);
 
   const handleAnalyze = async () => {
-    if (!jobDescription) {
+    if (!jobDescription.trim()) {
       alert("Please enter a job description.");
       return;
     }
@@ -17,10 +17,22 @@ function AnalyzeButton({ jobDescription, setResult }) {
         job_description: jobDescription,
       });
 
-      setResult(response.data.data);
+      console.log("Backend Response:", response.data);
+
+      if (response.data.success) {
+        setResult(response.data.data);
+      } else {
+        alert(response.data.message || "Analysis failed.");
+      }
     } catch (error) {
-      console.error(error);
-      alert("Analysis failed.");
+      console.error("Analyze Error:", error);
+
+      if (error.response) {
+        console.log("Backend Error:", error.response.data);
+        alert(JSON.stringify(error.response.data));
+      } else {
+        alert(error.message);
+      }
     } finally {
       setLoading(false);
     }
