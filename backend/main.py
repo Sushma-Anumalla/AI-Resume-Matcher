@@ -43,14 +43,12 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
         "http://127.0.0.1:5175",
-
         "https://ai-resume-matcher-lemon.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # -----------------------------
 # Home API
@@ -68,31 +66,25 @@ def home():
 @app.post("/upload-resume")
 async def upload_resume(file: UploadFile = File(...)):
 
-    # Allow only PDF
     if not file.filename.lower().endswith(".pdf"):
         return {
             "success": False,
             "message": "Only PDF files are allowed."
         }
 
-    # Create uploads folder
     os.makedirs("uploads", exist_ok=True)
 
-    # Delete old resumes
     for old_file in Path("uploads").glob("*.pdf"):
         old_file.unlink()
 
-    # Save uploaded resume
     file_path = Path("uploads") / file.filename
 
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
-    # Save current resume filename
     with open("current_resume.txt", "w") as f:
         f.write(file.filename)
 
-    # Extract text
     resume_text = extract_resume_text(file_path)
 
     return {
@@ -141,12 +133,20 @@ async def analyze(data: JobDescription):
             data.job_description
         )
 
+        print("\n================ AI RESULT ================\n")
+        print(result)
+        print("\n===========================================\n")
+
         return {
             "success": True,
             "data": result
         }
 
     except Exception as e:
+        print("\n================ ERROR ================\n")
+        print(str(e))
+        print("\n=======================================\n")
+
         return {
             "success": False,
             "message": str(e)
