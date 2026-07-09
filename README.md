@@ -190,7 +190,7 @@ GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 
 GitHub: https://github.com/Sushma-Anumalla
 
-LinkedIn: *(Add your LinkedIn profile here)*
+LinkedIn: https://www.linkedin.com/in/sushma-anumalla/
 
 ---
 
